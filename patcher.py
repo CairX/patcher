@@ -32,12 +32,23 @@ def patch(version):
 			values = change.split(" ", maxsplit=1)
 			action = values[0]
 			path = values[1].strip()
-			dst = os.path.join(INSTALL_LOCATION, path)
 
 			if action == "++":
+				dst = os.path.join(INSTALL_LOCATION, path)
 				shutil.copyfile(os.path.join(version_path, path), dst)
 			elif action == "--":
+				dst = os.path.join(INSTALL_LOCATION, path)
 				os.remove(dst)
+			elif action == ">>":
+				path = path.split(" ", maxsplit=1)
+				src = os.path.join(INSTALL_LOCATION, path[0])
+				dst = os.path.join(INSTALL_LOCATION, path[1])
+				dstfolder = os.path.dirname(dst)
+
+				if not os.path.exists(dstfolder):
+					os.makedirs(dstfolder)
+
+				shutil.move(src, dst)
 			else:
 				continue
 
