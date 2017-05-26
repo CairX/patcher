@@ -13,11 +13,8 @@ def update():
 	current = 0
 	with open(VERSION_FILE) as file:
 		current = file.readline().strip()
-	print(current)
+
 	versions = sorted(os.listdir("versions"))
-	print(versions)
-	print(versions.index(current))
-	print(versions[versions.index(current) + 1:])
 
 	for version in versions[versions.index(current) + 1:]:
 		patch(str(version))
