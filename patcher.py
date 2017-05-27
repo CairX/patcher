@@ -12,7 +12,7 @@ def update(versions_path, install_path):
 	with open(os.path.join(install_path, VERSION_FILE)) as file:
 		current = file.readline().strip()
 
-	versions = sorted(os.listdir("versions"))
+	versions = sorted(os.listdir(versions_path))
 
 	for version in versions[versions.index(current) + 1:]:
 		patch(str(version), versions_path, install_path)
