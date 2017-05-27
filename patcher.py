@@ -28,30 +28,42 @@ def patch(version):
 		for change in changes:
 			values = change.split(" ", maxsplit=1)
 			action = values[0]
-			path = values[1].strip()
+			argument = values[1].strip()
 
 			if action == "++":
-				dst = os.path.join(INSTALL_LOCATION, path)
-				shutil.copyfile(os.path.join(version_path, path), dst)
+				add(argument, version_path)
 			elif action == "--":
-				dst = os.path.join(INSTALL_LOCATION, path)
-				os.remove(dst)
+				remove(argument)
 			elif action == ">>":
-				path = path.split(" ", maxsplit=1)
-				src = os.path.join(INSTALL_LOCATION, path[0])
-				dst = os.path.join(INSTALL_LOCATION, path[1])
-				dstfolder = os.path.dirname(dst)
-
-				if not os.path.exists(dstfolder):
-					os.makedirs(dstfolder)
-
-				shutil.move(src, dst)
+				move(argument)
 			else:
 				continue
 
 	with open(VERSION_FILE, "w") as file:
 		file.write(version)
 
+
+def add(path, version_path):
+	dst = os.path.join(INSTALL_LOCATION, path)
+	src = os.path.join(version_path, path)
+	shutil.copyfile(src, dst)
+
+
+def remove(path):
+	dst = os.path.join(INSTALL_LOCATION, path)
+	os.remove(dst)
+
+
+def move(argument)
+	paths = argument.split(" ", maxsplit=1)
+	src = os.path.join(INSTALL_LOCATION, paths[0])
+	dst = os.path.join(INSTALL_LOCATION, paths[1])
+	dstfolder = os.path.dirname(dst)
+
+	if not os.path.exists(dstfolder):
+		os.makedirs(dstfolder)
+
+	shutil.move(src, dst)
 
 def install(version=1):
 	version_path = os.path.join(VERSIONS_LOCATION, str(version))
