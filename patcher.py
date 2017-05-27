@@ -3,27 +3,25 @@ import shutil
 import sys
 
 
-VERSIONS_LOCATION = "versions"
-INSTALL_LOCATION = "install"
-VERSION_FILE = os.path.join(INSTALL_LOCATION, "version.txt")
+VERSION_FILE = "version.txt"
 CHANGES_FILE = "changes.txt"
 
 
-def update():
+def update(versions_path, install_path):
 	current = 0
-	with open(VERSION_FILE) as file:
+	with open(os.path.join(install_path, VERSION_FILE)) as file:
 		current = file.readline().strip()
 
 	versions = sorted(os.listdir("versions"))
 
 	for version in versions[versions.index(current) + 1:]:
-		patch(str(version))
+		patch(str(version), versions_path, install_path)
 
 
-def patch(version):
+def patch(version, versions_path, install_path):
 	print("Patch v." + str(version))
 
-	version_path = os.path.join(VERSIONS_LOCATION, str(version))
+	version_path = os.path.join(versions_path, str(version))
 	version_changes = os.path.join(version_path, CHANGES_FILE)
 
 	with open(version_changes) as changes:
@@ -33,35 +31,35 @@ def patch(version):
 			argument = values[1].strip()
 
 			if action == "++":
-				add(argument, version_path)
+				add(argument, version_path, install_path)
 			elif action == "--":
-				remove(argument)
+				remove(argument, install_path)
 			elif action == ">>":
-				move(argument)
+				move(argument, install_path)
 			else:
 				continue
 
-	with open(VERSION_FILE, "w") as file:
+	with open(os.path.join(install_path, VERSION_FILE), "w") as file:
 		file.write(version)
 
 
-def add(path, version_path):
-	dst = os.path.join(INSTALL_LOCATION, path)
-	src = os.path.join(version_path, path)
+def add(entry, version_path, install_path):
+	src = os.path.join(version_path, entry)
+	dst = os.path.join(install_path, entry)
 	shutil.copyfile(src, dst)
 	print("++ " + dst)
 
 
-def remove(path):
-	dst = os.path.join(INSTALL_LOCATION, path)
+def remove(entry, install_path):
+	dst = os.path.join(install_path, entry)
 	os.remove(dst)
 	print("-- " + dst)
 
 
-def move(argument):
+def move(argument, install_path):
 	paths = argument.split(" ", maxsplit=1)
-	src = os.path.join(INSTALL_LOCATION, paths[0])
-	dst = os.path.join(INSTALL_LOCATION, paths[1])
+	src = os.path.join(install_path, paths[0])
+	dst = os.path.join(install_path, paths[1])
 	dstfolder = os.path.dirname(dst)
 
 	if not os.path.exists(dstfolder):
@@ -70,41 +68,45 @@ def move(argument):
 	shutil.move(src, dst)
 	print(">> " + src + " to " + dst)
 
-def install(version=1):
-	print("Install v." + str(version))
-	version_path = os.path.join(VERSIONS_LOCATION, str(version))
-	shutil.copytree(version_path, INSTALL_LOCATION)
-	os.remove(os.path.join(INSTALL_LOCATION, CHANGES_FILE))
 
-	with open(VERSION_FILE, "w") as file:
+def install(version, versions_path, install_path):
+	print("Install v." + str(version))
+	version_path = os.path.join(versions_path, str(version))
+	shutil.copytree(version_path, install_path)
+	os.remove(os.path.join(install_path, CHANGES_FILE))
+
+	with open(os.path.join(install_path, VERSION_FILE), "w") as file:
 		file.write(str(version))
 
 
-def uninstall():
+def uninstall(install_path):
 	print("Uninstall")
-	shutil.rmtree(INSTALL_LOCATION)
+	shutil.rmtree(install_path)
 
 
-def restore(version=1):
-	uninstall()
-	install(version)
+def restore(version, versions_path, install_path):
+	uninstall(install_path)
+	install(version, versions_path, install_path)
 
 
 if __name__ == "__main__":
+	VERSIONS_LOCATION = "versions"
+	INSTALL_LOCATION = "install"
+
 	if len(sys.argv) > 1:
 		command =sys.argv[1]
 		if command == "install":
 			if len(sys.argv) >= 3:
-				install(sys.argv[2])
+				install(sys.argv[2], VERSIONS_LOCATION, INSTALL_LOCATION)
 			else:
-				install()
+				install("1", VERSIONS_LOCATION, INSTALL_LOCATION)
 		elif command == "uninstall":
-			uninstall()
+			uninstall(INSTALL_LOCATION)
 		elif command == "restore":
 			if len(sys.argv) >= 3:
-				restore(sys.argv[2])
+				restore(sys.argv[2], VERSIONS_LOCATION, INSTALL_LOCATION)
 			else:
-				restore()
+				restore("1", VERSIONS_LOCATION, INSTALL_LOCATION)
 	else:
-		update()
+		update(VERSIONS_LOCATION, INSTALL_LOCATION)
 	print("Done")
