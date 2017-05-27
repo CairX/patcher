@@ -3,7 +3,7 @@
 `>>`, moves a file from one location to another or renames a file (not tested yet)
 
 # TODO
-* Print information about what is happening.
+* ~~Print information about what is happening.~~
 * Create a test enviorment.
 * Support folder paths for all commands.
 * Handle spaces in the `>>`-command.

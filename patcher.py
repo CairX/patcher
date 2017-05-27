@@ -21,6 +21,8 @@ def update():
 
 
 def patch(version):
+	print("Patch v." + str(version))
+
 	version_path = os.path.join(VERSIONS_LOCATION, str(version))
 	version_changes = os.path.join(version_path, CHANGES_FILE)
 
@@ -47,14 +49,16 @@ def add(path, version_path):
 	dst = os.path.join(INSTALL_LOCATION, path)
 	src = os.path.join(version_path, path)
 	shutil.copyfile(src, dst)
+	print("++ " + dst)
 
 
 def remove(path):
 	dst = os.path.join(INSTALL_LOCATION, path)
 	os.remove(dst)
+	print("-- " + dst)
 
 
-def move(argument)
+def move(argument):
 	paths = argument.split(" ", maxsplit=1)
 	src = os.path.join(INSTALL_LOCATION, paths[0])
 	dst = os.path.join(INSTALL_LOCATION, paths[1])
@@ -64,8 +68,10 @@ def move(argument)
 		os.makedirs(dstfolder)
 
 	shutil.move(src, dst)
+	print(">> " + src + " to " + dst)
 
 def install(version=1):
+	print("Install v." + str(version))
 	version_path = os.path.join(VERSIONS_LOCATION, str(version))
 	shutil.copytree(version_path, INSTALL_LOCATION)
 	os.remove(os.path.join(INSTALL_LOCATION, CHANGES_FILE))
@@ -75,6 +81,7 @@ def install(version=1):
 
 
 def uninstall():
+	print("Uninstall")
 	shutil.rmtree(INSTALL_LOCATION)
 
 
@@ -100,3 +107,4 @@ if __name__ == "__main__":
 				restore()
 	else:
 		update()
+	print("Done")
