@@ -31,7 +31,8 @@ def dircmp(lhs, rhs, ignore=[]):
 	return (match, mismatch, error)
 
 
-for test in os.listdir("tests"):
+tests = sorted(os.listdir("tests"))
+for test in tests:
 	print("Test: " + test)
 	versions = os.path.join("tests", test, "versions")
 	install = os.path.join("tests", test, "result")
