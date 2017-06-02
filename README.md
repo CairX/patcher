@@ -15,54 +15,54 @@ To keep the file/directory names consistent and not having to think something up
 
 #### Files
 Based upon fruits. Inspriation taken from [Wikipedia](https://simple.wikipedia.org/wiki/List_of_fruits).
-apple
-blueberry
-coconut
-dragonfruit
-elderberry
-fig
-grape
-huckleberry
-jackfruit
-kiwi
-lemon
-melon
-nectarine
-orange
-pear
-quince
-raspberry
-strawberry
-tamarind
-ugli
-yuzu
+* apple
+* blueberry
+* coconut
+* dragonfruit
+* elderberry
+* fig
+* grape
+* huckleberry
+* jackfruit
+* kiwi
+* lemon
+* melon
+* nectarine
+* orange
+* pear
+* quince
+* raspberry
+* strawberry
+* tamarind
+* ugli
+* yuzu
 
 
 #### Directories
 Based upon emotions. Inspiration taken from the article [A List of Feeling Words From A to Z](https://www.thespruce.com/feelings-words-from-a-to-z-2086647).
-awe
-brave
-curious
-delighted
-excited
-frustrated
-greedy
-happy
-irrational
-jinxed
-kind
-lazy
-mad
-nervous
-overstimulated
-psyched
-quirky
-rebellious
-serious
-trusted
-understood
-vibrant
-worried
-xenophobic
-yearning
-zealous
+* awe
+* brave
+* curious
+* delighted
+* excited
+* frustrated
+* greedy
+* happy
+* irrational
+* jinxed
+* kind
+* lazy
+* mad
+* nervous
+* overstimulated
+* psyched
+* quirky
+* rebellious
+* serious
+* trusted
+* understood
+* vibrant
+* worried
+* xenophobic
+* yearning
+* zealous
