@@ -6,6 +6,7 @@ import os
 def dircmp(lhs, rhs, ignore=[]):
 	left = os.scandir(lhs)
 	right = os.listdir(rhs)
+	right = [entry for entry in right if entry not in ignore]
 
 	# TODOD Support the testing of sub-folders
 	# TODO Sort either file or folders first
@@ -21,6 +22,7 @@ def dircmp(lhs, rhs, ignore=[]):
 				continue
 
 			if entry.name in right:
+				right.remove(entry.name)
 				if filecmp.cmp(entry.path, os.path.join(rhs, entry.name), shallow=False):
 					match.append(entry.path)
 				else:
@@ -29,12 +31,16 @@ def dircmp(lhs, rhs, ignore=[]):
 				error.append(entry.path)
 		elif entry.is_dir():
 			if entry.name in right:
+				right.remove(entry.name)
 				results = dircmp(entry.path, os.path.join(rhs, entry.name))
 				match.extend(results[0])
 				mismatch.extend(results[1])
 				error.extend(results[2])
 			else:
 				mismatch.append(entry.path)
+
+	right = [os.path.join(rhs, entry) for entry in right]
+	mismatch.extend(right)
 
 	return (match, mismatch, error)
 
@@ -52,6 +58,11 @@ for test in tests:
 	patcher.update(versions, install)
 
 	# TODO Remove the static here, might be multiple steps.
-	results = dircmp(os.path.join(versions, "2"), install, ["changes.txt"])
-	print("Passed: " + str(len(results[0])))
-	print("Failed: " + str(len(results[1]) + len(results[2])))
+	results = dircmp(os.path.join(versions, "2"), install, ["changes.txt", "version.txt"])
+	print("Match: " + str(len(results[0])))
+	print("Mismatch: " + str(len(results[1])))
+	for mismatch in results[1]:
+		print("\t" + mismatch)
+	print("Error:" + str(len(results[2])))
+	for error in results[2]:
+		print("\t" + error)
