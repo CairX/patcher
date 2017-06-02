@@ -46,6 +46,11 @@ def patch(version, versions_path, install_path):
 def add(entry, version_path, install_path):
 	src = os.path.join(version_path, entry)
 	dst = os.path.join(install_path, entry)
+	dstfolder = os.path.dirname(dst)
+
+	if not os.path.exists(dstfolder):
+		os.makedirs(dstfolder)
+
 	shutil.copyfile(src, dst)
 	print("++ " + dst)
 
