@@ -44,6 +44,7 @@ def patch(version, versions_path, install_path):
 
 
 def add(entry, version_path, install_path):
+	entry = entry.strip("\"")
 	src = os.path.join(version_path, entry)
 	dst = os.path.join(install_path, entry)
 	dstfolder = os.path.dirname(dst)
@@ -56,13 +57,16 @@ def add(entry, version_path, install_path):
 
 
 def remove(entry, install_path):
+	entry = entry.strip("\"")
 	dst = os.path.join(install_path, entry)
 	os.remove(dst)
 	print("-- " + dst)
 
 
 def move(argument, install_path):
-	paths = argument.split(" ", maxsplit=1)
+	paths = argument.split("\" \"", maxsplit=1)
+	paths = [path.strip("\"") for path in paths]
+
 	src = os.path.join(install_path, paths[0])
 	dst = os.path.join(install_path, paths[1])
 	dstfolder = os.path.dirname(dst)
