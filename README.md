@@ -5,6 +5,10 @@
 `--`, removes a file
 `>>`, moves a file from one location to another or renames a file (not tested yet)
 
+## Commit Messages
+* [Prefixing mesesages with emoji's.](https://gitmoji.carloscuesta.me/)
+* [Inparative subject line](https://chris.beams.io/posts/git-commit/#imperative)
+
 ## Tests
 ### Naming
 To keep the file/directory names consistent and not having to think something up the list below will provide names.
