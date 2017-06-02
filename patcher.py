@@ -26,9 +26,9 @@ def patch(version, versions_path, install_path):
 
 	with open(version_changes) as changes:
 		for change in changes:
-			values = change.split(" ", maxsplit=1)
-			action = values[0]
-			argument = values[1].strip()
+			change = change.strip()
+			action = change[:2]
+			argument = change[2:].strip()
 
 			if action == "++":
 				add(argument, version_path, install_path)
