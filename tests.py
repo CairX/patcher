@@ -47,6 +47,9 @@ def dircmp(lhs, rhs, ignore=[]):
 
 tests = sorted(os.listdir("tests"))
 for test in tests:
+	patcher.Log.level("INFO", False)
+	patcher.Log.level("DETAILS", False)
+
 	print("Test: " + test)
 	versions = os.path.join("tests", test, "versions")
 	install = os.path.join("tests", test, "result")

@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 import sys
@@ -5,6 +6,19 @@ import sys
 
 VERSION_FILE = "version.txt"
 CHANGES_FILE = "changes.txt"
+
+
+class Log(object):
+	__levels = {}
+
+	@classmethod
+	def level(self, level, value):
+		self.__levels[level] = value
+
+	@classmethod
+	def message(self, level, message):
+		if level in self.__levels and self.__levels[level]:
+			print(message)
 
 
 def update(versions_path, install_path):
@@ -19,7 +33,7 @@ def update(versions_path, install_path):
 
 
 def patch(version, versions_path, install_path):
-	print("Patch v." + str(version))
+	Log.message("INFO", "Patch version " + str(version))
 
 	version_path = os.path.join(versions_path, str(version))
 	version_changes = os.path.join(version_path, CHANGES_FILE)
@@ -53,14 +67,14 @@ def add(entry, version_path, install_path):
 		os.makedirs(dstfolder)
 
 	shutil.copyfile(src, dst)
-	print("++ " + dst)
+	Log.message("DETAILS", "\t++ " + dst)
 
 
 def remove(entry, install_path):
 	entry = entry.strip("\"")
 	dst = os.path.join(install_path, entry)
 	os.remove(dst)
-	print("-- " + dst)
+	Log.message("DETAILS", "\t-- " + dst)
 
 
 def move(argument, install_path):
@@ -75,11 +89,11 @@ def move(argument, install_path):
 		os.makedirs(dstfolder)
 
 	shutil.move(src, dst)
-	print(">> " + src + " to " + dst)
+	Log.message("DETAILS", "\t>> " + src + " to " + dst)
 
 
 def install(version, versions_path, install_path):
-	print("Install v." + str(version))
+	Log.message("INFO", "Install version " + str(version))
 	version_path = os.path.join(versions_path, str(version))
 	shutil.copytree(version_path, install_path)
 	os.remove(os.path.join(install_path, CHANGES_FILE))
@@ -89,7 +103,7 @@ def install(version, versions_path, install_path):
 
 
 def uninstall(install_path):
-	print("Uninstall")
+	Log.message("INFO", "Uninstall")
 	shutil.rmtree(install_path)
 
 
@@ -101,6 +115,9 @@ def restore(version, versions_path, install_path):
 if __name__ == "__main__":
 	VERSIONS_LOCATION = "versions"
 	INSTALL_LOCATION = "install"
+
+	Log.level("INFO", False)
+	Log.level("DETAILS", False)
 
 	if len(sys.argv) > 1:
 		command =sys.argv[1]
@@ -118,4 +135,3 @@ if __name__ == "__main__":
 				restore("1", VERSIONS_LOCATION, INSTALL_LOCATION)
 	else:
 		update(VERSIONS_LOCATION, INSTALL_LOCATION)
-	print("Done")
