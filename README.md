@@ -13,7 +13,7 @@
 ### Naming
 To keep the file/directory names consistent and not having to think something up the list below will provide names.
 
-#### Fiĺes
+#### Files
 Based upon fruits. Inspriation taken from [Wikipedia](https://simple.wikipedia.org/wiki/List_of_fruits).
 apple
 blueberry
