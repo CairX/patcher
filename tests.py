@@ -27,6 +27,14 @@ def dircmp(lhs, rhs, ignore=[]):
 					mismatch.append(entry.path)
 			else:
 				error.append(entry.path)
+		elif entry.is_dir():
+			if entry.name in right:
+				results = dircmp(entry.path, os.path.join(rhs, entry.name))
+				match.extend(results[0])
+				mismatch.extend(results[1])
+				error.extend(results[2])
+			else:
+				mismatch.append(entry.path)
 
 	return (match, mismatch, error)
 
