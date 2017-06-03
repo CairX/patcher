@@ -60,13 +60,23 @@ def patch(version, versions_path, install_path):
 def add(entry, version_path, install_path):
 	entry = entry.strip("\"")
 	src = os.path.join(version_path, entry)
+
+	if not os.path.exists(src):
+		Log.message("WARNING", "\tFile doesn't exist: " + src)
+		return
+
 	dst = os.path.join(install_path, entry)
 	dstfolder = os.path.dirname(dst)
 
-	if not os.path.exists(dstfolder):
-		os.makedirs(dstfolder)
+	if os.path.isfile(src):
 
-	shutil.copyfile(src, dst)
+		if not os.path.exists(dstfolder):
+			os.makedirs(dstfolder)
+
+		shutil.copyfile(src, dst)
+	else:
+		shutil.copytree(src, dst, ignore=shutil.ignore_patterns(".keep"))
+
 	Log.message("DETAILS", "\t++ " + dst)
 
 
@@ -95,7 +105,7 @@ def move(argument, install_path):
 def install(version, versions_path, install_path):
 	Log.message("INFO", "Install version " + str(version))
 	version_path = os.path.join(versions_path, str(version))
-	shutil.copytree(version_path, install_path)
+	shutil.copytree(version_path, install_path, ignore=shutil.ignore_patterns(".keep"))
 	os.remove(os.path.join(install_path, CHANGES_FILE))
 
 	with open(os.path.join(install_path, VERSION_FILE), "w") as file:
