@@ -71,10 +71,10 @@ def test(directory):
 	for error in results[2]:
 		print("\t" + error)
 
+
 def run():
 	for root, dirs, files in os.walk("tests"):
 		if "versions" in dirs:
-			print(root)
 			test(root)
 
 
