@@ -47,14 +47,13 @@ def dircmp(lhs, rhs, ignore=[]):
 	return (match, mismatch, error)
 
 
-tests = sorted(os.listdir("tests"))
-for test in tests:
+def test(directory):
 	patcher.Log.level("INFO", False)
 	patcher.Log.level("DETAILS", False)
 
-	print("Test: " + test)
-	versions = os.path.join("tests", test, "versions")
-	install = os.path.join("tests", test, "result")
+	print("Test: " + directory)
+	versions = os.path.join("tests", directory, "versions")
+	install = os.path.join("tests", directory, "result")
 
 	if os.path.exists(install):
 		patcher.uninstall(install)
@@ -71,3 +70,7 @@ for test in tests:
 	print("Error:" + str(len(results[2])))
 	for error in results[2]:
 		print("\t" + error)
+
+tests = sorted(os.listdir("tests"))
+for directory in tests:
+	test(directory)
