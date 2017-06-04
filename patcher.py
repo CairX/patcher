@@ -69,12 +69,14 @@ def add(entry, version_path, install_path):
 	dstfolder = os.path.dirname(dst)
 
 	if os.path.isfile(src):
-
 		if not os.path.exists(dstfolder):
 			os.makedirs(dstfolder)
 
 		shutil.copyfile(src, dst)
 	else:
+		if os.path.exists(dst):
+			shutil.rmtree(dst)
+
 		shutil.copytree(src, dst, ignore=shutil.ignore_patterns(".keep"))
 
 	Log.message("DETAILS", "\t++ " + dst)
