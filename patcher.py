@@ -62,7 +62,7 @@ def add(entry, version_path, install_path):
 	src = os.path.join(version_path, entry)
 
 	if not os.path.exists(src):
-		Log.message("WARNING", "\tFile doesn't exist: " + src)
+		Log.message("WARNING", "\tSource file doesn't exist: " + src)
 		return
 
 	dst = os.path.join(install_path, entry)
@@ -85,7 +85,16 @@ def add(entry, version_path, install_path):
 def remove(entry, install_path):
 	entry = entry.strip("\"")
 	dst = os.path.join(install_path, entry)
-	os.remove(dst)
+
+	if not os.path.exists(dst):
+		Log.message("WARNING", "\tDestination file doesn't exist: " + dst)
+		return
+
+	if os.path.isfile(dst):
+		os.remove(dst)
+	else:
+		shutil.rmtree(dst)
+
 	Log.message("DETAILS", "\t-- " + dst)
 
 
