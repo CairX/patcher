@@ -52,8 +52,8 @@ def test(directory):
 	patcher.Log.level("DETAILS", False)
 
 	print("Test: " + directory)
-	versions = os.path.join("tests", directory, "versions")
-	install = os.path.join("tests", directory, "result")
+	versions = os.path.join(directory, "versions")
+	install = os.path.join(directory, "result")
 
 	if os.path.exists(install):
 		patcher.uninstall(install)
@@ -72,9 +72,11 @@ def test(directory):
 		print("\t" + error)
 
 def run():
-	tests = sorted(os.listdir("tests"))
-	for directory in tests:
-		test(directory)
+	for root, dirs, files in os.walk("tests"):
+		if "versions" in dirs:
+			print(root)
+			test(root)
+
 
 if __name__ == "__main__":
 	run()
