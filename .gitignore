@@ -1,3 +1,4 @@
 __pycache__/
 install/
 tests/*/result/
+.idea/
