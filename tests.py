@@ -8,7 +8,7 @@ def dircmp(lhs, rhs, ignore=[]):
 	right = os.listdir(rhs)
 	right = [entry for entry in right if entry not in ignore]
 
-	# TODOD Support the testing of sub-folders
+	# TODO Support the testing of sub-folders
 	# TODO Sort either file or folders first
 	# TODO Sort in alphabetic order
 
