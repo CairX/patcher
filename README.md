@@ -14,20 +14,16 @@ The root directory of a test should indicate the purpose of the test.
 
 **Format**
 ```
-operation_type_location_naming
+operation/type/location/naming
 ```
 * operation - An action (`++`, `--`, or `>>`) can sometime perform multiple types of operation. For example the `++` can both add a new file or update an existing one. To be specific about what the test is supposed to evaluate we use the operation name rather than the action name.
 * type - File or directory.
-* location - The level of directory nesting that is being tested. Examples, root, sub, or nested.
+* location - The level of directory nesting that is being tested.
+    * Root, direct child of the version folder.
+    * Sub, placed within a second level of directory.
 * naming - The type of naming pattern that is being tested.
 	* Standard, an alphabetical word in lower case.
 	* Spaces, a lower case name containing at least one white space.
-
-**Examples**
-```
-add_file_root_standard
-remove_di
-```
 
 ### Naming
 To keep the file/directory names consistent and not having to think something up the list below will provide names.
