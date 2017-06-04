@@ -71,6 +71,10 @@ def test(directory):
 	for error in results[2]:
 		print("\t" + error)
 
-tests = sorted(os.listdir("tests"))
-for directory in tests:
-	test(directory)
+def run():
+	tests = sorted(os.listdir("tests"))
+	for directory in tests:
+		test(directory)
+
+if __name__ == "__main__":
+	run()
