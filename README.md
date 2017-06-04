@@ -6,8 +6,8 @@
 `>>`, moves a file from one location to another or renames a file (not tested yet)
 
 ## Commit Messages
-* [Prefixing mesesages with emoji's.](https://gitmoji.carloscuesta.me/)
-* [Inparative subject line](https://chris.beams.io/posts/git-commit/#imperative)
+* [Prefixing messages with emoji's.](https://gitmoji.carloscuesta.me/)
+* [Imperative subject line](https://chris.beams.io/posts/git-commit/#imperative)
 
 ## Tests
 The root directory of a test should indicate the purpose of the test.
@@ -33,7 +33,7 @@ remove_di
 To keep the file/directory names consistent and not having to think something up the list below will provide names.
 
 #### Files
-Based upon fruits. Inspriation taken from [Wikipedia](https://simple.wikipedia.org/wiki/List_of_fruits).
+Based upon fruits. Inspiration taken from [Wikipedia](https://simple.wikipedia.org/wiki/List_of_fruits).
 * apple
 * blueberry
 * coconut
