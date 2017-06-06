@@ -104,10 +104,14 @@ def move(argument, install_path):
 
 	src = os.path.join(install_path, paths[0])
 	dst = os.path.join(install_path, paths[1])
-	dstfolder = os.path.dirname(dst)
 
-	if not os.path.exists(dstfolder):
-		os.makedirs(dstfolder)
+	if os.path.isfile(src):
+		dst_directory = os.path.dirname(dst)
+		if not os.path.exists(dst_directory):
+			os.makedirs(dst_directory)
+
+	if os.path.exists(dst):
+		Log.message("WARNING", "\tDestination already exist: " + dst)
 
 	shutil.move(src, dst)
 	Log.message("DETAILS", "\t>> " + src + " to " + dst)
