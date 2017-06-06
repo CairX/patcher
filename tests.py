@@ -50,6 +50,7 @@ def dircmp(lhs, rhs, ignore=[]):
 def test(directory):
 	patcher.Log.level("INFO", False)
 	patcher.Log.level("DETAILS", False)
+	patcher.Log.level("WARNING", True)
 
 	print("Test: " + directory)
 	versions = os.path.join(directory, "versions")
