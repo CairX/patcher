@@ -3,7 +3,7 @@ import patcher
 import os
 
 
-def dircmp(lhs, rhs, ignore=[]):
+def dircmp(lhs, rhs, ignore=[], parent=None):
 	left = os.scandir(lhs)
 	right = os.listdir(rhs)
 	right = [entry for entry in right if entry not in ignore]
@@ -24,17 +24,18 @@ def dircmp(lhs, rhs, ignore=[]):
 			if entry.name in right:
 				right.remove(entry.name)
 				if filecmp.cmp(entry.path, os.path.join(rhs, entry.name), shallow=False):
-					match.append(entry.path)
+					match.append(os.path.join(parent, entry.name) if parent else entry.name)
 				else:
 					mismatch.append(entry.path)
 			else:
 				error.append(entry.path)
 		elif entry.is_dir():
 			if entry.name in right:
-				match.append(entry.path)
+				match.append(os.path.join(parent, entry.name) if parent else entry.name)
 				right.remove(entry.name)
+				dirparent = os.path.join(parent, entry.name) if parent else entry.name
 
-				results = dircmp(entry.path, os.path.join(rhs, entry.name), [".keep"])
+				results = dircmp(entry.path, os.path.join(rhs, entry.name), [".keep"], dirparent)
 				match.extend(results[0])
 				mismatch.extend(results[1])
 				error.extend(results[2])
@@ -42,7 +43,7 @@ def dircmp(lhs, rhs, ignore=[]):
 				mismatch.append(entry.path)
 
 	right = [os.path.join(rhs, entry) for entry in right]
-	mismatch.extend(right)
+	error.extend(right)
 
 	return (match, mismatch, error)
 
@@ -52,7 +53,6 @@ def test(directory):
 	patcher.Log.level("DETAILS", False)
 	patcher.Log.level("WARNING", True)
 
-	print("Test: " + directory)
 	versions = os.path.join(directory, "versions")
 	install = os.path.join(directory, "result")
 
@@ -64,13 +64,25 @@ def test(directory):
 
 	# TODO Remove the static here, might be multiple steps.
 	results = dircmp(os.path.join(versions, "2"), install, ["changes.txt", "version.txt", ".keep"])
-	print("Match: " + str(len(results[0])))
-	print("Mismatch: " + str(len(results[1])))
-	for mismatch in results[1]:
-		print("\t" + mismatch)
-	print("Error:" + str(len(results[2])))
-	for error in results[2]:
-		print("\t" + error)
+
+	excepted = False
+	with open(os.path.join(directory, "expected.txt")) as file:
+		exp = file.readlines()
+		exp = [entry.strip() for entry in exp]
+		excepted = exp == results[0]
+
+	passed = excepted and len(results[1]) == 0 and len(results[2]) == 0
+	print(("passed" if passed else "failed") + ": " + directory)
+	if not passed:
+		print("Match: " + str(len(results[0])))
+		for match in results[0]:
+			print("\t" + match)
+		print("Mismatch: " + str(len(results[1])))
+		for mismatch in results[1]:
+			print("\t" + mismatch)
+		print("Error:" + str(len(results[2])))
+		for error in results[2]:
+			print("\t" + error)
 
 
 def run():

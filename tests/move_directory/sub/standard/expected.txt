@@ -1,0 +1,3 @@
+curious
+curious/brave
+curious/brave/apple.txt
