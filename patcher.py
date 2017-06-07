@@ -4,7 +4,7 @@ import shutil
 import sys
 
 
-VERSION_FILE = "version.txt"
+VERSION_FILE = ".version"
 CHANGES_FILE = "changes.txt"
 
 
