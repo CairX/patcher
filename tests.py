@@ -2,57 +2,45 @@ import filecmp
 import patcher
 import os
 
+from collections import namedtuple
+
+Result = namedtuple("Result", ["match", "mismatch", "error"])
+
 
 def dircmp(lhs, rhs, ignore=[], parent=None):
-	left = os.scandir(lhs)
-	right = os.listdir(rhs)
-	right = [entry for entry in right if entry not in ignore]
+	lhs_entries = os.listdir(lhs)
+	lhs_entries = [e for e in lhs_entries if e not in ignore]
 
-	# TODO Support the testing of sub-folders
-	# TODO Sort either file or folders first
-	# TODO Sort in alphabetic order
+	rhs_entries = os.listdir(rhs)
+	rhs_entries = [e for e in rhs_entries if e not in ignore]
 
-	match = []
-	mismatch = []
-	error = []
+	compare = set(lhs_entries).intersection(rhs_entries)
 
-	for entry in left:
-		if entry.is_file():
-			if entry.name in ignore:
-				continue
+	result = Result([], [], [])
+	result.error.extend([os.path.join(lhs, e) for e in lhs_entries if e not in compare])
+	result.error.extend([os.path.join(rhs, e) for e in rhs_entries if e not in compare])
 
-			if entry.name in right:
-				right.remove(entry.name)
-				if filecmp.cmp(entry.path, os.path.join(rhs, entry.name), shallow=False):
-					match.append(os.path.join(parent, entry.name) if parent else entry.name)
-				else:
-					mismatch.append(entry.path)
+	for entry in compare:
+		lhs_entry = os.path.join(lhs, entry)
+		rhs_entry = os.path.join(rhs, entry)
+		relative_entry = os.path.join(parent, entry) if parent else entry
+
+		if os.path.isfile(lhs_entry):
+			if filecmp.cmp(lhs_entry, rhs_entry, shallow=False):
+				result.match.append(relative_entry)
 			else:
-				error.append(entry.path)
-		elif entry.is_dir():
-			if entry.name in right:
-				match.append(os.path.join(parent, entry.name) if parent else entry.name)
-				right.remove(entry.name)
-				dirparent = os.path.join(parent, entry.name) if parent else entry.name
+				result.mismatch.append(relative_entry)
+		else:
+			entry_result = dircmp(lhs_entry, rhs_entry, parent=relative_entry)
+			result.match.append(relative_entry)
+			result.match.extend(entry_result.match)
+			result.mismatch.extend(entry_result.mismatch)
+			result.error.extend(entry_result.error)
 
-				results = dircmp(entry.path, os.path.join(rhs, entry.name), [".keep"], dirparent)
-				match.extend(results[0])
-				mismatch.extend(results[1])
-				error.extend(results[2])
-			else:
-				mismatch.append(entry.path)
-
-	right = [os.path.join(rhs, entry) for entry in right]
-	error.extend(right)
-
-	return (match, mismatch, error)
+	return result
 
 
 def dirtest(directory):
-	patcher.Log.level("INFO", False)
-	patcher.Log.level("DETAILS", False)
-	patcher.Log.level("WARNING", True)
-
 	versions = os.path.join(directory, "versions")
 	install = os.path.join(directory, "result")
 
@@ -63,25 +51,25 @@ def dirtest(directory):
 	patcher.update(versions, install)
 
 	# TODO Remove the static here, might be multiple steps.
-	results = dircmp(os.path.join(versions, "2"), install, ["changes.txt", "version.txt", ".keep"])
+	result = dircmp(os.path.join(versions, "2"), install, ["changes.txt", "version.txt"])
 
 	excepted = False
 	with open(os.path.join(directory, "expected.txt")) as file:
 		exp = file.readlines()
 		exp = [entry.strip() for entry in exp]
-		excepted = exp == results[0]
+		excepted = exp == result.match
 
-	passed = excepted and len(results[1]) == 0 and len(results[2]) == 0
+	passed = excepted and len(result.mismatch) == 0 and len(result.error) == 0
 	print(("passed" if passed else "failed") + ": " + directory)
 	if not passed:
-		print("Match: " + str(len(results[0])))
-		for match in results[0]:
+		print("Match: " + str(len(result.match)))
+		for match in result.match:
 			print("\t" + match)
-		print("Mismatch: " + str(len(results[1])))
-		for mismatch in results[1]:
+		print("Mismatch: " + str(len(result.mismatch)))
+		for mismatch in result.mismatch:
 			print("\t" + mismatch)
-		print("Error:" + str(len(results[2])))
-		for error in results[2]:
+		print("Error:" + str(len(result.error)))
+		for error in result.error:
 			print("\t" + error)
 
 
@@ -96,4 +84,7 @@ def run():
 
 
 if __name__ == "__main__":
+	patcher.Log.level("INFO", False)
+	patcher.Log.level("DETAILS", False)
+	patcher.Log.level("WARNING", True)
 	run()
