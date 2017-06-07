@@ -48,7 +48,7 @@ def dircmp(lhs, rhs, ignore=[], parent=None):
 	return (match, mismatch, error)
 
 
-def test(directory):
+def dirtest(directory):
 	patcher.Log.level("INFO", False)
 	patcher.Log.level("DETAILS", False)
 	patcher.Log.level("WARNING", True)
@@ -86,9 +86,13 @@ def test(directory):
 
 
 def run():
+	tests = []
 	for root, dirs, files in os.walk("tests"):
 		if "versions" in dirs:
-			test(root)
+			tests.append(root)
+
+	for test in sorted(tests):
+		dirtest(test)
 
 
 if __name__ == "__main__":
