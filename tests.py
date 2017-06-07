@@ -51,7 +51,7 @@ def dirtest(directory):
 	patcher.update(versions, install)
 
 	# TODO Remove the static here, might be multiple steps.
-	result = dircmp(os.path.join(versions, "2"), install, ["changes.txt", patcher.VERSION_FILE])
+	result = dircmp(os.path.join(versions, "2"), install, [patcher.CHANGES_FILE, patcher.VERSION_FILE])
 
 	excepted = False
 	with open(os.path.join(directory, "expected.txt")) as file:

@@ -5,7 +5,7 @@ import sys
 
 
 VERSION_FILE = ".version"
-CHANGES_FILE = "changes.txt"
+CHANGES_FILE = ".changes"
 
 
 class Log(object):
