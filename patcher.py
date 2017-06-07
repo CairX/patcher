@@ -12,12 +12,12 @@ class Log(object):
 	__levels = {}
 
 	@classmethod
-	def level(self, level, value):
-		self.__levels[level] = value
+	def level(cls, level, value):
+		cls.__levels[level] = value
 
 	@classmethod
-	def message(self, level, message):
-		if level in self.__levels and self.__levels[level]:
+	def message(cls, level, message):
+		if level in cls.__levels and cls.__levels[level]:
 			print(message)
 
 
