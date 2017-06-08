@@ -1,3 +1,4 @@
+import argparse
 import logging
 import os
 import shutil
@@ -144,19 +145,48 @@ if __name__ == "__main__":
 	Log.level("INFO", False)
 	Log.level("DETAILS", False)
 
-	if len(sys.argv) > 1:
-		command =sys.argv[1]
-		if command == "install":
-			if len(sys.argv) >= 3:
-				install(sys.argv[2], VERSIONS_LOCATION, INSTALL_LOCATION)
-			else:
-				install("1", VERSIONS_LOCATION, INSTALL_LOCATION)
-		elif command == "uninstall":
-			uninstall(INSTALL_LOCATION)
-		elif command == "restore":
-			if len(sys.argv) >= 3:
-				restore(sys.argv[2], VERSIONS_LOCATION, INSTALL_LOCATION)
-			else:
-				restore("1", VERSIONS_LOCATION, INSTALL_LOCATION)
-	else:
+	parser = argparse.ArgumentParser(
+		prog="patcher",
+		description="Install, uninstall and update a directory ."
+	)
+	parser.add_argument(
+		"-v", "--version",
+		action="version",
+		version="%(prog)s 0.1"
+	)
+	parser.add_argument(
+		"-u", "--update",
+		action="store_true",
+		help="update install directory to the latest version"
+	)
+	parser.add_argument(
+		"--install",
+		action="store",
+		nargs=1,
+		metavar="VERSION",
+		help="install specified version"
+	)
+	parser.add_argument(
+		"--restore",
+		action="store",
+		nargs=1,
+		metavar="VERSION",
+		help="clean install specified version"
+	)
+	parser.add_argument(
+		"--uninstall",
+		action="store_true",
+		help="remove the install directory"
+	)
+	args = parser.parse_args()
+
+	if args.update:
 		update(VERSIONS_LOCATION, INSTALL_LOCATION)
+	elif args.install:
+		install(args.install[0], VERSIONS_LOCATION, INSTALL_LOCATION)
+	elif args.restore:
+		restore(args.restore[0], VERSIONS_LOCATION, INSTALL_LOCATION)
+	elif args.uninstall:
+		uninstall(INSTALL_LOCATION)
+	else:
+		print("Specify a command, -h or --help for details.")
