@@ -1,2 +1,0 @@
--- something1.txt
-++ something2.txt
