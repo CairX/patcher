@@ -16,7 +16,7 @@ class Item(object):
 		return "(" + str(self.lhs) + ", " + str(self.rhs) + ")"
 
 
-def dircmp(lhs, rhs, ignore=[], parent=None):
+def dircmp(lhs, rhs, ignore=[], parent=""):
 	lhs_entries = os.listdir(lhs)
 	lhs_entries = [e for e in lhs_entries if e not in ignore]
 
@@ -26,13 +26,13 @@ def dircmp(lhs, rhs, ignore=[], parent=None):
 	compare = set(lhs_entries).intersection(rhs_entries)
 
 	result = Result([], [], [])
-	result.error.extend([Item(os.path.join(lhs, e), None, os.path.join(parent, e) if parent else e) for e in lhs_entries if e not in compare])
-	result.error.extend([Item(None, os.path.join(rhs, e), os.path.join(parent, e) if parent else e) for e in rhs_entries if e not in compare])
+	result.error.extend([Item(os.path.join(lhs, e), None, os.path.join(parent, e)) for e in lhs_entries if e not in compare])
+	result.error.extend([Item(None, os.path.join(rhs, e), os.path.join(parent, e)) for e in rhs_entries if e not in compare])
 
 	for entry in compare:
 		lhs_entry = os.path.join(lhs, entry)
 		rhs_entry = os.path.join(rhs, entry)
-		relative_entry = os.path.join(parent, entry) if parent else entry
+		relative_entry = os.path.join(parent, entry)
 
 		if os.path.isfile(lhs_entry):
 			if filecmp.cmp(lhs_entry, rhs_entry, shallow=False):
