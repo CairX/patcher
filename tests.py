@@ -56,7 +56,7 @@ def dirtest(directory):
 	excepted = False
 	with open(os.path.join(directory, "expected.txt")) as file:
 		exp = file.readlines()
-		exp = [entry.strip() for entry in exp]
+		exp = [patcher.prepare_path(entry) for entry in exp]
 		excepted = exp == result.match
 
 	passed = excepted and len(result.mismatch) == 0 and len(result.error) == 0

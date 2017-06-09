@@ -22,6 +22,13 @@ class Log(object):
 			print(message)
 
 
+def prepare_path(path):
+	path = path.strip()
+	path = path.strip("\"")
+	path = os.path.join(*path.split("/"))
+	return path
+
+
 def update(versions_path, install_path):
 	current = 0
 	with open(os.path.join(install_path, VERSION_FILE)) as file:
@@ -43,7 +50,7 @@ def patch(version, versions_path, install_path):
 		for change in changes:
 			change = change.strip()
 			action = change[:2]
-			argument = change[2:].strip()
+			argument = change[2:]
 
 			if action == "++":
 				add(argument, version_path, install_path)
@@ -59,7 +66,7 @@ def patch(version, versions_path, install_path):
 
 
 def add(entry, version_path, install_path):
-	entry = entry.strip("\"")
+	entry = prepare_path(entry)
 	src = os.path.join(version_path, entry)
 
 	if not os.path.exists(src):
@@ -84,7 +91,7 @@ def add(entry, version_path, install_path):
 
 
 def remove(entry, install_path):
-	entry = entry.strip("\"")
+	entry = prepare_path(entry)
 	dst = os.path.join(install_path, entry)
 
 	if not os.path.exists(dst):
@@ -101,7 +108,7 @@ def remove(entry, install_path):
 
 def move(argument, install_path):
 	paths = argument.split("\" \"", maxsplit=1)
-	paths = [path.strip("\"") for path in paths]
+	paths = [prepare_path(path) for path in paths]
 
 	src = os.path.join(install_path, paths[0])
 	dst = os.path.join(install_path, paths[1])
