@@ -17,23 +17,27 @@ def dirtest(directory):
 	result = compare.dircmp(os.path.join(versions, "2"), install, [patcher.CHANGES_FILE, patcher.VERSION_FILE])
 
 	excepted = False
+	exp = []
 	with open(os.path.join(directory, "expected.txt")) as file:
 		exp = file.readlines()
 		exp = [patcher.prepare_path(entry) for entry in exp]
-		excepted = exp == result.match
+		excepted = exp == [i.relative for i in result.match]
 
 	passed = excepted and len(result.mismatch) == 0 and len(result.error) == 0
 	print(("passed" if passed else "failed") + ": " + directory)
 	if not passed:
+		print("Expected:")
+		for idx, e in enumerate(exp):
+			print("\t(" + str(e) + ", " + result.match[idx].relative + ")")
 		print("Match: " + str(len(result.match)))
 		for match in result.match:
-			print("\t" + match)
+			print("\t" + str(match))
 		print("Mismatch: " + str(len(result.mismatch)))
 		for mismatch in result.mismatch:
-			print("\t" + mismatch)
+			print("\t" + str(mismatch))
 		print("Error:" + str(len(result.error)))
 		for error in result.error:
-			print("\t" + error)
+			print("\t" + str(error))
 
 
 def run():
