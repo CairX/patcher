@@ -2,3 +2,4 @@ __pycache__/
 install/
 tests/**/result/
 .idea/
+downloader.ini
