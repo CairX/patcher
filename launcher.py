@@ -14,12 +14,20 @@ class Application(tk.Frame):
 		self.server_version = None
 		self.local_version = None
 
-		self.log = tk.Text(self)
+		self.button = tk.Button(self)
+		self.button.pack(side=tk.BOTTOM)
+
+		self.log_frame = tk.Frame(self)
+		self.log_frame.pack(fill=tk.BOTH, expand=True)
+
+		self.log_scroll = tk.Scrollbar(self.log_frame)
+		self.log_scroll.pack(fill=tk.Y, side=tk.RIGHT)
+
+		self.log = tk.Text(self.log_frame, yscrollcommand=self.log_scroll.set)
 		self.log.pack(fill=tk.BOTH, expand=True)
+		self.log_scroll.config(command=self.log.yview)
 		self.counter = 0
 
-		self.button = tk.Button(self)
-		self.button.pack()
 		self.compare_versions()
 
 	def compare_versions(self):
