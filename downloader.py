@@ -24,33 +24,37 @@ class Log(object):
 			print(message)
 
 
-def update(install_path, server_info, server_versions):
+def get_server_version(server_info):
 	response = urllib.request.urlopen(server_info)
 	versions = response.read().decode("utf-8").split("\n")
+	return versions[-1]
+
+
+def get_local_version(install_path):
+	if not os.path.exists(install_path):
+		Log.message("WARNING", "Install path doesn't exist: " + install_path)
+		return 0
+
+	version_path = os.path.join(install_path, VERSION_FILE)
+	if not os.path.exists(version_path):
+		Log.message("WARNING", "Install version-file doesn't exist: " + install_path)
+		return 0
+
+	try:
+		with open(version_path) as file:
+			current = file.readline().strip()
+	except OSError:
+		Log.message("WARNING", "Can't access: " + version_path)
+		return 0
+
+	return current
+
+
+def install(install_path, server_versions, version):
+	Log.message("INFO", "Installing version " + str(version))
 
 	if os.path.exists(install_path):
-		version_path = os.path.join(install_path, VERSION_FILE)
-		try:
-			with open(version_path) as file:
-				current = file.readline().strip()
-		except OSError:
-			Log.message("ERROR", "Can't access: " + version_path)
-			return
-
-		try:
-			index = versions.index(current) + 1
-		except ValueError:
-			Log.message("ERROR", "Version mismatch.")
-			return
-
-		if index == len(versions):
-			Log.message("INFO", "No new update.")
-			return
-
 		shutil.rmtree(install_path)
-
-	version = versions[-1]
-	Log.message("INFO", "Installing version " + str(version))
 
 	tar_name = str(version) + ".tar.xz"
 	tmp_dir = "tmp"
@@ -70,8 +74,19 @@ def update(install_path, server_info, server_versions):
 	shutil.rmtree(tmp_dir)
 
 
+def update(install_path, server_info, server_versions):
+	server_version = get_server_version(server_info)
+	local_version = get_local_version(install_path)
+
+	if local_version == server_version:
+		Log.message("INFO", "No updates.")
+	else:
+		install(install_path, server_versions, server_version)
+
+
 if __name__ == "__main__":
 	Log.level("INFO", True)
+	Log.level("WARNING", True)
 	Log.level("ERROR", True)
 
 	config = ConfigParser()
