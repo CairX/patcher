@@ -5,23 +5,11 @@ import tarfile
 import urllib.request
 
 from configparser import ConfigParser
+from log import Log
 
 
 VERSION_FILE = ".version"
 CHANGES_FILE = ".changes"
-
-
-class Log(object):
-	__levels = {}
-
-	@classmethod
-	def level(cls, level, value):
-		cls.__levels[level] = value
-
-	@classmethod
-	def message(cls, level, message):
-		if level in cls.__levels and cls.__levels[level]:
-			print(message)
 
 
 def get_server_version(server_info):
