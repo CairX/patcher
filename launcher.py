@@ -2,6 +2,7 @@ import downloader
 import tkinter as tk
 
 from configparser import ConfigParser
+from log import Log
 
 
 class Application(tk.Frame):
@@ -26,6 +27,7 @@ class Application(tk.Frame):
 		self.log = tk.Text(self.log_frame, yscrollcommand=self.log_scroll.set)
 		self.log.pack(fill=tk.BOTH, expand=True)
 		self.log_scroll.config(command=self.log.yview)
+		Log.text = self.log
 		self.counter = 0
 
 		self.compare_versions()
@@ -49,9 +51,9 @@ class Application(tk.Frame):
 
 
 if __name__ == "__main__":
-	downloader.Log.level("INFO", True)
-	downloader.Log.level("WARNING", True)
-	downloader.Log.level("ERROR", True)
+	Log.level("INFO", True)
+	Log.level("WARNING", True)
+	Log.level("ERROR", True)
 
 	config = ConfigParser()
 	config.read("downloader.ini")
