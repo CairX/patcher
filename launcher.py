@@ -52,6 +52,7 @@ class Application(tk.Frame):
 
 if __name__ == "__main__":
 	Log.level("INFO", True)
+	Log.level("DETAILS", True)
 	Log.level("WARNING", True)
 	Log.level("ERROR", True)
 

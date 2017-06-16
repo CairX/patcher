@@ -20,7 +20,6 @@ def get_server_version(server_info):
 
 def get_local_version(install_path):
 	if not os.path.exists(install_path):
-		Log.message("WARNING", "Install path doesn't exist: " + install_path)
 		return 0
 
 	version_path = os.path.join(install_path, VERSION_FILE)
@@ -32,34 +31,43 @@ def get_local_version(install_path):
 		with open(version_path) as file:
 			current = file.readline().strip()
 	except OSError:
-		Log.message("WARNING", "Can't access: " + version_path)
+		Log.message("WARNING", "Can't access version file at: " + version_path)
 		return 0
 
 	return current
 
 
 def install(install_path, server_versions, version):
-	Log.message("INFO", "Installing version " + str(version))
+	Log.message("INFO", "Install version {0}".format(str(version)))
 
 	if os.path.exists(install_path):
+		Log.message("DETAILS", "Remove old install path at \"{}\"".format(install_path))
 		shutil.rmtree(install_path)
 
 	tar_name = str(version) + ".tar.xz"
 	tmp_dir = "tmp"
+	Log.message("DETAILS", "Create temporary directory at \"{}\"".format(tmp_dir))
 	os.mkdir(tmp_dir)
 	tar_tmp = os.path.join(tmp_dir, tar_name)
+
+	Log.message("DETAILS", "Download new version to temporary directory")
 	urllib.request.urlretrieve(server_versions + tar_name, tar_tmp)
 
+	Log.message("DETAILS", "Extract new files to install directory")
 	with lzma.open(tar_tmp) as f:
 		with tarfile.open(fileobj=f) as tar:
 			tar.extractall(install_path)
 
+	Log.message("DETAILS", "Remove change file from install directory")
 	os.remove(os.path.join(install_path, CHANGES_FILE))
 
+	Log.message("DETAILS", "Update version information")
 	with open(os.path.join(install_path, VERSION_FILE), "w") as file:
 		file.write(str(version))
 
+	Log.message("DETAILS", "Remove temporary directory at \"{}\"".format(tmp_dir))
 	shutil.rmtree(tmp_dir)
+	Log.message("DETAILS", "Installation complete")
 
 
 def update(install_path, server_info, server_versions):
@@ -74,6 +82,7 @@ def update(install_path, server_info, server_versions):
 
 if __name__ == "__main__":
 	Log.level("INFO", True)
+	Log.level("DETAILS", True)
 	Log.level("WARNING", True)
 	Log.level("ERROR", True)
 
