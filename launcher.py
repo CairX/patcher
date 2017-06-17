@@ -1,4 +1,7 @@
 import downloader
+import subprocess
+import time
+import threading
 import tkinter as tk
 
 from configparser import ConfigParser
@@ -48,6 +51,16 @@ class Application(tk.Frame):
 	def say(self):
 		self.counter += 1
 		self.log.insert(tk.END, "Button pressed " + str(self.counter) + " times.\n")
+
+		proc = subprocess.Popen(['python', '-u', 'launcher.py'])
+		thread = threading.Thread(target=self.__waiter, args=[proc])
+		thread.start()
+
+	def __waiter(self, proc):
+		self.button.config(text="Playing Now", state=tk.DISABLED)
+		while proc.poll() is None:
+			time.sleep(1)
+		self.button.config(text="Play", state=tk.NORMAL)
 
 
 if __name__ == "__main__":
