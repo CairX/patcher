@@ -1,9 +1,9 @@
 # patcher
 
 ## Actions
-`++`, works for adding a file and replacing (not tested yet)
-`--`, removes a file
-`>>`, moves a file from one location to another or renames a file (not tested yet)
+* `++` - add or replace file (replace not tested yet)
+* `--` - remove file
+* `>>` - move file from one location to another or rename file (rename not tested yet)
 
 ## Commit Messages
 * [Prefixing messages with emoji's.](https://gitmoji.carloscuesta.me/)
